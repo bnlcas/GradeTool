@@ -1,0 +1,15 @@
+{
+  "originHash" : "53b89430476954f595eddb378f403d78d355318dcc63d757bfb6434add331a88",
+  "pins" : [
+    {
+      "identity" : "cameraview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brettfazio/CameraView",
+      "state" : {
+        "revision" : "bb528e129ac23f2888dee51a309bbd4b10374673",
+        "version" : "0.0.1"
+      }
+    }
+  ],
+  "version" : 3
+}

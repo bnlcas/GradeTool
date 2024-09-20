@@ -1,0 +1,400 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E38948612C8B3B22001CCBA9 /* cameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38948602C8B3B22001CCBA9 /* cameraPreview.swift */; };
+		E38948642C8CCD8F001CCBA9 /* CameraView in Frameworks */ = {isa = PBXBuildFile; productRef = E38948632C8CCD8F001CCBA9 /* CameraView */; };
+		E38948662C8CCE86001CCBA9 /* SensorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38948652C8CCE86001CCBA9 /* SensorManager.swift */; };
+		E38948822C8E929A001CCBA9 /* SlopeVisualizerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38948812C8E929A001CCBA9 /* SlopeVisualizerView.swift */; };
+		E38948842C8E949C001CCBA9 /* ReticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38948832C8E949C001CCBA9 /* ReticleView.swift */; };
+		E38948882C92A53A001CCBA9 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38948872C92A53A001CCBA9 /* LocationManager.swift */; };
+		E3AF95092B545AED00413374 /* GradeToolApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3AF95082B545AED00413374 /* GradeToolApp.swift */; };
+		E3AF950B2B545AED00413374 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3AF950A2B545AED00413374 /* ContentView.swift */; };
+		E3AF950D2B545AEF00413374 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E3AF950C2B545AEF00413374 /* Assets.xcassets */; };
+		E3AF95102B545AEF00413374 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E3AF950F2B545AEF00413374 /* Preview Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E38948602C8B3B22001CCBA9 /* cameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cameraPreview.swift; sourceTree = "<group>"; };
+		E38948652C8CCE86001CCBA9 /* SensorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorManager.swift; sourceTree = "<group>"; };
+		E38948812C8E929A001CCBA9 /* SlopeVisualizerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlopeVisualizerView.swift; sourceTree = "<group>"; };
+		E38948832C8E949C001CCBA9 /* ReticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReticleView.swift; sourceTree = "<group>"; };
+		E38948872C92A53A001CCBA9 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		E3AF95052B545AED00413374 /* GradeTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GradeTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E3AF95082B545AED00413374 /* GradeToolApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradeToolApp.swift; sourceTree = "<group>"; };
+		E3AF950A2B545AED00413374 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E3AF950C2B545AEF00413374 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E3AF950F2B545AEF00413374 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E3AF95022B545AED00413374 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E38948642C8CCD8F001CCBA9 /* CameraView in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E3AF94FC2B545AED00413374 = {
+			isa = PBXGroup;
+			children = (
+				E3AF95072B545AED00413374 /* GradeTool */,
+				E3AF95062B545AED00413374 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E3AF95062B545AED00413374 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E3AF95052B545AED00413374 /* GradeTool.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E3AF95072B545AED00413374 /* GradeTool */ = {
+			isa = PBXGroup;
+			children = (
+				E38948602C8B3B22001CCBA9 /* cameraPreview.swift */,
+				E3AF95082B545AED00413374 /* GradeToolApp.swift */,
+				E3AF950A2B545AED00413374 /* ContentView.swift */,
+				E38948832C8E949C001CCBA9 /* ReticleView.swift */,
+				E38948812C8E929A001CCBA9 /* SlopeVisualizerView.swift */,
+				E3AF950C2B545AEF00413374 /* Assets.xcassets */,
+				E3AF950E2B545AEF00413374 /* Preview Content */,
+				E38948652C8CCE86001CCBA9 /* SensorManager.swift */,
+				E38948872C92A53A001CCBA9 /* LocationManager.swift */,
+			);
+			path = GradeTool;
+			sourceTree = "<group>";
+		};
+		E3AF950E2B545AEF00413374 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				E3AF950F2B545AEF00413374 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E3AF95042B545AED00413374 /* GradeTool */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E3AF95132B545AEF00413374 /* Build configuration list for PBXNativeTarget "GradeTool" */;
+			buildPhases = (
+				E3AF95012B545AED00413374 /* Sources */,
+				E3AF95022B545AED00413374 /* Frameworks */,
+				E3AF95032B545AED00413374 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GradeTool;
+			packageProductDependencies = (
+				E38948632C8CCD8F001CCBA9 /* CameraView */,
+			);
+			productName = GradeTool;
+			productReference = E3AF95052B545AED00413374 /* GradeTool.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E3AF94FD2B545AED00413374 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					E3AF95042B545AED00413374 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
+				};
+			};
+			buildConfigurationList = E3AF95002B545AED00413374 /* Build configuration list for PBXProject "GradeTool" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E3AF94FC2B545AED00413374;
+			packageReferences = (
+				E38948622C8CCD8E001CCBA9 /* XCRemoteSwiftPackageReference "CameraView" */,
+			);
+			productRefGroup = E3AF95062B545AED00413374 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E3AF95042B545AED00413374 /* GradeTool */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E3AF95032B545AED00413374 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E3AF95102B545AEF00413374 /* Preview Assets.xcassets in Resources */,
+				E3AF950D2B545AEF00413374 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E3AF95012B545AED00413374 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E3AF950B2B545AED00413374 /* ContentView.swift in Sources */,
+				E38948842C8E949C001CCBA9 /* ReticleView.swift in Sources */,
+				E38948822C8E929A001CCBA9 /* SlopeVisualizerView.swift in Sources */,
+				E38948882C92A53A001CCBA9 /* LocationManager.swift in Sources */,
+				E3AF95092B545AED00413374 /* GradeToolApp.swift in Sources */,
+				E38948612C8B3B22001CCBA9 /* cameraPreview.swift in Sources */,
+				E38948662C8CCE86001CCBA9 /* SensorManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E3AF95112B545AEF00413374 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E3AF95122B545AEF00413374 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E3AF95142B545AEF00413374 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GradeTool/Preview Content\"";
+				DEVELOPMENT_TEAM = LXCR5YEKL9;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Use Camera to Show Reference Object";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Need to spy on you";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = BenLucasHeavyIndustries.GradeTool;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E3AF95152B545AEF00413374 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GradeTool/Preview Content\"";
+				DEVELOPMENT_TEAM = LXCR5YEKL9;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Use Camera to Show Reference Object";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Need to spy on you";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = BenLucasHeavyIndustries.GradeTool;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E3AF95002B545AED00413374 /* Build configuration list for PBXProject "GradeTool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E3AF95112B545AEF00413374 /* Debug */,
+				E3AF95122B545AEF00413374 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E3AF95132B545AEF00413374 /* Build configuration list for PBXNativeTarget "GradeTool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E3AF95142B545AEF00413374 /* Debug */,
+				E3AF95152B545AEF00413374 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E38948622C8CCD8E001CCBA9 /* XCRemoteSwiftPackageReference "CameraView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/brettfazio/CameraView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E38948632C8CCD8F001CCBA9 /* CameraView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E38948622C8CCD8E001CCBA9 /* XCRemoteSwiftPackageReference "CameraView" */;
+			productName = CameraView;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = E3AF94FD2B545AED00413374 /* Project object */;
+}
