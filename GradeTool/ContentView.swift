@@ -28,7 +28,7 @@ struct ContentView: View {
     
     let previewHeight : CGFloat = 400
     
-    @State var grade : Double = -100.0
+    @State var grade : Double = 100.0
     @State var horizontalAngle : Double = 0.0
         
     @State var cameraBasedLevel = false
@@ -38,6 +38,15 @@ struct ContentView: View {
     @State var pressure : Double = 0.0
     
     @State var ambientLight : Double = 0.0
+    
+    @State var hasPassedDebounceThreshold = true
+    
+    let debounceThresholdGrade = 1.0
+
+    func hapticFeedback() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+    }
     
     func gravityForwardAngle(rotationMatrix : CMRotationMatrix, gravity: CMAcceleration) -> Double{
         //forward vector3: [0,0,1]
@@ -150,9 +159,16 @@ struct ContentView: View {
                     }
                     //let theta
                     //acos(gravity_z_normed_dot)
-                    grade = 100 * tan(theta)
-
-                    //grade = attitude.pitch
+                    let newGrade = 100 * tan(theta)
+                    
+                    if(sign(newGrade) != sign(grade) && hasPassedDebounceThreshold)
+                    {
+                        hapticFeedback()
+                        hasPassedDebounceThreshold = false
+                        
+                    }
+                    hasPassedDebounceThreshold = hasPassedDebounceThreshold || abs(newGrade) > debounceThresholdGrade
+                    grade = newGrade
                 }
             }
             
