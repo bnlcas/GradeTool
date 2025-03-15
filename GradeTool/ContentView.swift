@@ -10,6 +10,16 @@ import CoreMotion
 import SensorKit
 import CameraView
 
+enum GradeUnits{
+    case degrees
+    case percentGrade
+}
+
+enum InstrumentMode {
+    case level
+    case camera
+}
+
 struct ContentView: View {
     let motionManager = CMMotionManager();
     let queue = OperationQueue()
@@ -28,7 +38,7 @@ struct ContentView: View {
     
     let previewHeight : CGFloat = 400
     
-    @State var grade : Double = 100.0
+    @State var grade : Double?
     @State var horizontalAngle : Double = 0.0
         
     @State var cameraBasedLevel = false
@@ -41,6 +51,8 @@ struct ContentView: View {
     
     @State var hasPassedDebounceThreshold = true
     
+    @State var gradeUnits : GradeUnits = .percentGrade
+        
     let debounceThresholdGrade = 1.0
 
     func hapticFeedback() {
@@ -65,34 +77,48 @@ struct ContentView: View {
                 Text("Grade:")
                 Spacer()
             }
+            if(grade != nil) {
+                HStack{
+                    switch(gradeUnits){
+                    case .degrees:
+                        Text(String(format: "%.2f", abs(grade!)) + "°")
+                            .frame(width: 80, height:25)
+                    case .percentGrade:
+                        Text(String(format: "%.2f", abs(grade!)) + "%")
+                            .frame(width: 80, height:25)
+                    }
 
-            HStack{
-                Text(String(format: "%.2f", abs(grade)) + "% ")
-                    .frame(width: 80, height:25)
-                //Text("\((10.0 * grade).rounded()/10.0) %")
-                if(cameraBasedLevel){
-                    SlopeVisualizerView(height: 25, grade: $grade)
-                        .frame(width: 30, height:25)
-                        .transition(.scale(scale: 0.0, anchor: UnitPoint(x: 0.5, y: 1.0)))
-
+                    //Text("\((10.0 * grade).rounded()/10.0) %")
+                    if(cameraBasedLevel){
+                        SlopeVisualizerView(height: 25, grade: $grade)
+                            .frame(width: 30, height:25)
+                            .transition(.scale(scale: 0.0, anchor: UnitPoint(x: 0.5, y: 1.0)))
+                        
+                    }
+                    Spacer()
                 }
+                
+                if(cameraBasedLevel){
+                    ZStack{
+                        CameraView()
+                        ReticleView()
+                    }
+                    .frame(height: previewHeight)
+                    .transition(.move(edge: .leading))
+                    
+                } else{
+                    SlopeVisualizerView(height: previewHeight, grade: $grade)
+                        .transition(.move(edge: .trailing))
+                    //.transition(.scale(scale: 0.0, anchor: UnitPoint(x: 0.1, y: 0.0)))
+                    
+                }
+            } else{
+                Spacer()
+                Text("Initializing...")
+                ProgressView()
                 Spacer()
             }
-            
-            if(cameraBasedLevel){
-                ZStack{
-                    CameraView()
-                    ReticleView()
-                }
-                .frame(height: previewHeight)
-                .transition(.move(edge: .leading))
-
-            } else{
-                SlopeVisualizerView(height: previewHeight, grade: $grade)
-                    .transition(.move(edge: .trailing))
-                    //.transition(.scale(scale: 0.0, anchor: UnitPoint(x: 0.1, y: 0.0)))
-
-            }
+                /*
             HStack{
                 Text("Elevation: \(Int(locationManager.altitude)) ft")
                 Spacer()
@@ -104,39 +130,74 @@ struct ContentView: View {
             HStack{
                 Text("Luminosity: \(Int(sensorKitManager.ambientLightLevel)) lux")
                 Spacer()
-            }
+            }*/
             Spacer()
-            Button(action: {
-                withAnimation(Animation.linear(duration: 0.4)){
-                    self.cameraBasedLevel.toggle()
-                }
-            }){
-                HStack{
-                    if(self.cameraBasedLevel){
-                        Text("Plane Alignment")
-                        Image(systemName: "righttriangle.fill")
-                    } else {
-                        Text("Camera Alignment")
-                        Image(systemName: "camera")
+            HStack{
+                Text("Alignment:")
+                Spacer()
+                Button(action: {
+                    withAnimation(Animation.linear(duration: 0.4)){
+                        self.cameraBasedLevel.toggle()
                     }
-                    Spacer()
+                }){
+                    HStack{
+                        if(self.cameraBasedLevel){
+                            Text("Plane")
+                            Image(systemName: "righttriangle.fill")
+                        } else {
+                            Text("Camera")
+                            Image(systemName: "camera")
+                        }
+                    }
                 }
             }
+            .padding()
+            
+            Picker("Units:", selection: $gradeUnits) {
+                Text("Percent Grade").tag(GradeUnits.percentGrade)
+                Text("Degrees").tag(GradeUnits.degrees)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            /*
+            Picker("Units:", selection: $cameraBasedLevel) {
+                HStack{
+                    Text("Plane")
+                    //Image(systemName: "righttriangle.fill")
+                }
+                .tag(false)
+                HStack{
+                    Text("Camera")
+                    //Image(systemName: "camera")
+                }
+                .tag(true)
+                //Text("Camera").tag(false)
+                //Text("Level").tag(true)
+            }
+            .pickerStyle(SegmentedPickerStyle())*/
+            /*
+            HStack{
+                Text("Alignment:")
+                Spacer()
+                Button(action: {
+                    withAnimation(Animation.linear(duration: 0.4)){
+                        self.cameraBasedLevel.toggle()
+                    }
+                }){
+                    HStack{
+                        if(self.cameraBasedLevel){
+                            Text("Plane")
+                            Image(systemName: "righttriangle.fill")
+                        } else {
+                            Text("Camera")
+                            Image(systemName: "camera")
+                        }
+                    }
+                }
+            }
+            .padding()*/
         }
         .padding(5.0)
         .onAppear {
-            self.altimeter.startAbsoluteAltitudeUpdates(to: self.altitudeQueue) { (data: CMAbsoluteAltitudeData?, error: Error?) in
-                guard let data = data else { print( "Error: \(error!)")
-                    return
-                }
-                
-                let altitude = data.altitude
-                DispatchQueue.main.async {
-                    //elevation = altitude * 3.28084
-                }
-                //data.absolutre
-            }
-
             self.motionManager.startDeviceMotionUpdates(using: .xArbitraryCorrectedZVertical,  to: self.queue) { (data: CMDeviceMotion?, error: Error?) in
                 guard let data = data else {
                     print("Error: \(error!)")
@@ -161,17 +222,23 @@ struct ContentView: View {
                     //acos(gravity_z_normed_dot)
                     let newGrade = 100 * tan(theta)
                     
-                    if(sign(newGrade) != sign(grade) && hasPassedDebounceThreshold)
+                    if(sign(newGrade) != sign(grade ?? 0.0) && hasPassedDebounceThreshold)
                     {
                         hapticFeedback()
                         hasPassedDebounceThreshold = false
                         
                     }
                     hasPassedDebounceThreshold = hasPassedDebounceThreshold || abs(newGrade) > debounceThresholdGrade
-                    grade = newGrade
+                    switch gradeUnits {
+                    case .degrees:
+                        grade = theta * 180 / 3.141528
+                    case .percentGrade:
+                        grade = newGrade
+                    }
+                    
                 }
             }
-            
+            /*
             //self.sensorKitManager.startMonitoring()
             //self.barometer.startRecording()
             //self.barometer.
@@ -181,7 +248,7 @@ struct ContentView: View {
             
             //self.ambientLightSensor.
             
-            
+            */
         }
     }
 }
