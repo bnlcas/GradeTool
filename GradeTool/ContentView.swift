@@ -39,6 +39,7 @@ struct ContentView: View {
     let previewHeight : CGFloat = 400
     
     @State var grade : Double?
+    @State var gradeAngle: Double?
     @State var horizontalAngle : Double = 0.0
         
     @State var cameraBasedLevel = false
@@ -81,7 +82,7 @@ struct ContentView: View {
                 HStack{
                     switch(gradeUnits){
                     case .degrees:
-                        Text(String(format: "%.2f", abs(grade!)) + "°")
+                        Text(String(format: "%.2f", abs(gradeAngle!)) + "°")
                             .frame(width: 80, height:25)
                     case .percentGrade:
                         Text(String(format: "%.2f", abs(grade!)) + "%")
@@ -158,43 +159,6 @@ struct ContentView: View {
                 Text("Degrees").tag(GradeUnits.degrees)
             }
             .pickerStyle(SegmentedPickerStyle())
-            /*
-            Picker("Units:", selection: $cameraBasedLevel) {
-                HStack{
-                    Text("Plane")
-                    //Image(systemName: "righttriangle.fill")
-                }
-                .tag(false)
-                HStack{
-                    Text("Camera")
-                    //Image(systemName: "camera")
-                }
-                .tag(true)
-                //Text("Camera").tag(false)
-                //Text("Level").tag(true)
-            }
-            .pickerStyle(SegmentedPickerStyle())*/
-            /*
-            HStack{
-                Text("Alignment:")
-                Spacer()
-                Button(action: {
-                    withAnimation(Animation.linear(duration: 0.4)){
-                        self.cameraBasedLevel.toggle()
-                    }
-                }){
-                    HStack{
-                        if(self.cameraBasedLevel){
-                            Text("Plane")
-                            Image(systemName: "righttriangle.fill")
-                        } else {
-                            Text("Camera")
-                            Image(systemName: "camera")
-                        }
-                    }
-                }
-            }
-            .padding()*/
         }
         .padding(5.0)
         .onAppear {
@@ -229,13 +193,9 @@ struct ContentView: View {
                         
                     }
                     hasPassedDebounceThreshold = hasPassedDebounceThreshold || abs(newGrade) > debounceThresholdGrade
-                    switch gradeUnits {
-                    case .degrees:
-                        grade = theta * 180 / 3.141528
-                    case .percentGrade:
-                        grade = newGrade
-                    }
                     
+                    grade = newGrade
+                    gradeAngle = theta * 57.29577951308232
                 }
             }
             /*
