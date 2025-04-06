@@ -111,8 +111,6 @@ struct ContentView: View {
                 ProgressView()
                 Spacer()
             }
-            Spacer()
-        
             if(locationManager.authorizationStatus == .authorizedAlways || locationManager.authorizationStatus == .authorizedWhenInUse) {
                 if let location = locationManager.location {
                     // Display latitude, longitude, and elevation (altitude)
@@ -129,13 +127,6 @@ struct ContentView: View {
                         }
                         .padding(8)
                         Spacer()
-                        Button(action: {
-                            withAnimation(Animation.linear(duration: 0.4)){
-                                self.showSurveyView = true
-                            }
-                        }){
-                            Text("Survey")
-                        }
                     }
                 } else {
                     Text("Getting location...")
@@ -144,6 +135,20 @@ struct ContentView: View {
                 
             } else{
                 Text("Geolocation Unavailable")
+            }
+            Spacer()
+            Button(action: {
+                withAnimation(Animation.linear(duration: 0.4)){
+                    self.showSurveyView = true
+                }
+            }){
+                Text("Survey")
+                    .padding(22)
+                    .frame(width: 222, height: 44)
+                    .background(Color(hue: 0.1, saturation: 0.8, brightness: 0.7))
+                    .foregroundColor(Color.white)
+                    .cornerRadius(11)
+                .frame(width: 222, height: 44)
             }
             
             /*
@@ -169,16 +174,17 @@ struct ContentView: View {
             .padding()*/
             Picker("Units:", selection: $cameraBasedLevel) {
                 HStack{
-                    Text("Camera Targeting")
+                    Text("📷 Camera Level")
                     //Image(systemName: "camera")
                 }
                 .tag(true)
                 HStack{
-                    Text("Device Level")
+                    Text("📐 Device Level")
                     //Image(systemName: "righttriangle.fill")
                 }
                 .tag(false)
             }
+            .frame(height:48)
             .pickerStyle(SegmentedPickerStyle())
             
             Picker("Units:", selection: $gradeUnits) {
