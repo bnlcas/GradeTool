@@ -24,16 +24,6 @@ struct ContentView: View {
     let motionManager = CMMotionManager();
     let queue = OperationQueue()
 
-    let altimeter = CMAltimeter();
-    let altitudeQueue = OperationQueue()
-    
-    //let locationManager = CLLocationManager()
-    
-    //let barometer = SRSensorReader(sensor: SRSensor(rawValue: "ambientPressure"))
-    //let barometerQueue = OperationQueue()
-    
-    @StateObject private var sensorKitManager = SensorManager()
-
     @StateObject private var locationManager = LocationManager()
     
     let previewHeight : CGFloat = 400
@@ -43,18 +33,16 @@ struct ContentView: View {
     @State var horizontalAngle : Double = 0.0
         
     @State var cameraBasedLevel = false
-    
-    @State var elevation : Double = 0.0
-    
-    @State var pressure : Double = 0.0
-    
-    @State var ambientLight : Double = 0.0
-    
+        
     @State var hasPassedDebounceThreshold = true
     
     @State var gradeUnits : GradeUnits = .percentGrade
         
     let debounceThresholdGrade = 1.0
+    
+    @State private var showSurveyView = false
+    
+    @State private var currentAttitude: CMAttitude? = nil
 
     func hapticFeedback() {
         let generator = UIImpactFeedbackGenerator(style: .light)
@@ -98,20 +86,24 @@ struct ContentView: View {
                     }
                     Spacer()
                 }
-                
-                if(cameraBasedLevel){
-                    ZStack{
-                        CameraView()
-                        ReticleView()
+                GeometryReader { geometry in
+                    // Calculate full screen width and height as 4/3 of the width.
+                    if(cameraBasedLevel){
+                        //CameraFeedTargetingView()
+                        
+                        ZStack{
+                            CameraFeedTargetingView()
+                            ReticleView()
+                        }
+                        .frame(width: geometry.size.width, height: geometry.size.width*4/3)
+                        .transition(.move(edge: .leading))
+                        
+                    } else{
+                        SlopeVisualizerView(height: previewHeight, grade: $grade)
+                            .transition(.move(edge: .trailing))
+                        //.transition(.scale(scale: 0.0, anchor: UnitPoint(x: 0.1, y: 0.0)))
+                        
                     }
-                    .frame(height: previewHeight)
-                    .transition(.move(edge: .leading))
-                    
-                } else{
-                    SlopeVisualizerView(height: previewHeight, grade: $grade)
-                        .transition(.move(edge: .trailing))
-                    //.transition(.scale(scale: 0.0, anchor: UnitPoint(x: 0.1, y: 0.0)))
-                    
                 }
             } else{
                 Spacer()
@@ -119,22 +111,44 @@ struct ContentView: View {
                 ProgressView()
                 Spacer()
             }
-                /*
-            HStack{
-                Text("Elevation: \(Int(locationManager.altitude)) ft")
-                Spacer()
-            }
-            HStack{
-                Text("Pressue: \(Int(pressure)) bar")
-                Spacer()
-            }
-            HStack{
-                Text("Luminosity: \(Int(sensorKitManager.ambientLightLevel)) lux")
-                Spacer()
-            }*/
             Spacer()
+        
+            if(locationManager.authorizationStatus == .authorizedAlways || locationManager.authorizationStatus == .authorizedWhenInUse) {
+                if let location = locationManager.location {
+                    // Display latitude, longitude, and elevation (altitude)
+                    HStack(alignment: .top){
+                        VStack(alignment: .leading){
+                            HStack{
+                                Text(String(format: "Latitude: %.2f°,", location.coordinate.latitude))
+                                
+                                Text(String(format: "Longitude: %.2f°",
+                                            location.coordinate.longitude))
+                            }
+                            Text(String(format: "Elevation: %.1f (m)",
+                                        location.altitude))
+                        }
+                        .padding(8)
+                        Spacer()
+                        Button(action: {
+                            withAnimation(Animation.linear(duration: 0.4)){
+                                self.showSurveyView = true
+                            }
+                        }){
+                            Text("Survey")
+                        }
+                    }
+                } else {
+                    Text("Getting location...")
+                }
+                    
+                
+            } else{
+                Text("Geolocation Unavailable")
+            }
+            
+            /*
             HStack{
-                Text("Alignment:")
+                Text("Grade Viewer:")
                 Spacer()
                 Button(action: {
                     withAnimation(Animation.linear(duration: 0.4)){
@@ -152,7 +166,20 @@ struct ContentView: View {
                     }
                 }
             }
-            .padding()
+            .padding()*/
+            Picker("Units:", selection: $cameraBasedLevel) {
+                HStack{
+                    Text("Camera Targeting")
+                    //Image(systemName: "camera")
+                }
+                .tag(true)
+                HStack{
+                    Text("Device Level")
+                    //Image(systemName: "righttriangle.fill")
+                }
+                .tag(false)
+            }
+            .pickerStyle(SegmentedPickerStyle())
             
             Picker("Units:", selection: $gradeUnits) {
                 Text("Percent Grade").tag(GradeUnits.percentGrade)
@@ -162,7 +189,7 @@ struct ContentView: View {
         }
         .padding(5.0)
         .onAppear {
-            self.motionManager.startDeviceMotionUpdates(using: .xArbitraryCorrectedZVertical,  to: self.queue) { (data: CMDeviceMotion?, error: Error?) in
+            self.motionManager.startDeviceMotionUpdates(using: .xTrueNorthZVertical,  to: self.queue) { (data: CMDeviceMotion?, error: Error?) in
                 guard let data = data else {
                     print("Error: \(error!)")
                     return
@@ -171,6 +198,7 @@ struct ContentView: View {
                 let attitude: CMAttitude = data.attitude
                 
                 DispatchQueue.main.async {
+                    currentAttitude = attitude  // Save current attitude for survey points.
                     let theta : Double
                     if(self.cameraBasedLevel){
                         
@@ -198,17 +226,11 @@ struct ContentView: View {
                     gradeAngle = theta * 57.29577951308232
                 }
             }
-            /*
-            //self.sensorKitManager.startMonitoring()
-            //self.barometer.startRecording()
-            //self.barometer.
-            
-            //let barometer = SRSensor(rawValue: "ambientPressure")
-            
-            
-            //self.ambientLightSensor.
-            
-            */
+        }
+        .sheet(isPresented: $showSurveyView) {
+            // Pass the current location and attitude into SurveyView.
+            SurveyView(currentLocation: locationManager.location, currentAttitude: currentAttitude)
+                .presentationDetents([.fraction(0.5)])
         }
     }
 }
