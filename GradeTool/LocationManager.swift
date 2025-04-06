@@ -6,41 +6,54 @@
 //
 import CoreLocation
 
-class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
-    //MARK: Object to Access Location Services
+// A custom location manager class that conforms to CLLocationManagerDelegate
+class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     
-    private var continuation: CheckedContinuation<CLLocation, Error>?
+    // Published properties to update the UI
+    @Published var location: CLLocation?
+    @Published var authorizationStatus: CLAuthorizationStatus
 
-    
-    public var altitude : Double = -2.0
-    //MARK: Set up the Location Manager Delegate
     override init() {
+        // Get the initial authorization status
+        self.authorizationStatus = locationManager.authorizationStatus
         super.init()
+        
+        // Set up the location manager
         locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest//kCLLocationAccuracyReduced //  kCLLocationAccuracyBest
+        locationManager.distanceFilter = kCLDistanceFilterNone
+        
+        // Request permission (you can also request .requestAlwaysAuthorization() if needed)
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
     }
     
-    func checkAuthorization() {
-        switch locationManager.authorizationStatus {
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
+    // Delegate method called when authorization changes
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        self.authorizationStatus = manager.authorizationStatus
+        
+        // Start or stop updates based on the new status
+        switch authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+            locationManager.startUpdatingLocation()
         default:
-            return
+            locationManager.stopUpdatingLocation()
         }
     }
     
-    
-    //MARK: Asynchronously request the current location
-    var currentLocation: CLLocation {
-        get async throws {
-            return try await withCheckedThrowingContinuation { continuation in
-                // 1. Set up the continuation object
-                self.continuation = continuation
-                // 2. Triggers the update of the current location
-                locationManager.requestLocation()
-                //locationManager.location?.coordinate.latitude
-                altitude = locationManager.location?.altitude ?? -1.0
+    // Delegate method called when new locations are available
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        // Get the most recent location
+        if let newLocation = locations.last {
+            DispatchQueue.main.async {
+                self.location = newLocation
             }
         }
+    }
+    
+    // Handle any errors in location updates
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Location update failed: \(error.localizedDescription)")
     }
 }
