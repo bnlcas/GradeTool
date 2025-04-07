@@ -174,12 +174,12 @@ struct ContentView: View {
             .padding()*/
             Picker("Units:", selection: $cameraBasedLevel) {
                 HStack{
-                    Text("📷 Camera Level")
+                    Text("Camera Level")
                     //Image(systemName: "camera")
                 }
                 .tag(true)
                 HStack{
-                    Text("📐 Device Level")
+                    Text("Device Level")
                     //Image(systemName: "righttriangle.fill")
                 }
                 .tag(false)

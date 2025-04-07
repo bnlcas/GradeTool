@@ -30,65 +30,48 @@ struct SurveyView: View {
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        NavigationView {
-            VStack {
-                ScrollView {
-                        LazyVStack(alignment: .leading) {
-                            ForEach(geoSurvey.lines.indices, id: \.self) { index in
-                                SurveyPointView(line: geoSurvey.lines[index])
-                            }
-                            .onDelete(perform: deletePoints)
-                            .onMove(perform: movePoints)
-                        }
-                        .padding(.horizontal)
-                    }
-                    .frame(height: 200)
-                HStack {
-                    Button("Add Survey Point") {
-                        addSurveyPoint()
-                    }
-                    .padding()
-                    Spacer()
-                    Button("Clear All") {
-                        geoSurvey.clearSurvey()
-                    }
-                    .padding()
+        VStack{
+            HStack(alignment: .top) {
+                Text("Survey:")
+                    .font(.title)
+                Spacer()
+                Button("Done") {
+                    presentationMode.wrappedValue.dismiss()
                 }
-                
+            }
+            .padding()
+            HStack{
                 VStack(alignment: .leading) {
-                    if geoSurvey.lines.count > 1 {
-                        let odometer = geoSurvey.surveyPathOdometer()
-                        let elevation = geoSurvey.surveyPathElevationGain()
-
-                        Text("Total Distance: \(String(format: "%.2f", odometer)) m")
-                        Text("Elevation Gain: \(String(format: "%.2f", elevation)) m")
-                        HStack{
-                            Text("Total Distance:")
-                            Spacer()
-                            Text("\(String(format: "%.2f", odometer)) (m)")
-                        }
-                        HStack{
-                            Text("Total Elevation:")
-                            Spacer()
-                            Text("\(String(format: "%.2f", geoSurvey.targetPointElevation)) (m)")
-                        }
-                    } else {
-                        Text("Add more survey points to calculate stats.")
-                    }
+                    Text("Total Path Distance: \(String(format: "%.2f", geoSurvey.surveyDistance)) m")
+                    Text("Elevation Gain: \(String(format: "%.2f", geoSurvey.surveyElevation)) m")
+                    Text("Target Elevation \(String(format: "%.2f", geoSurvey.targetPointElevation)) (m)")
+                }
+                Spacer()
+            }
+            .padding()
+            HStack {
+                Button("Add Survey Point") {
+                    addSurveyPoint()
+                }
+                .padding()
+                Spacer()
+                Button("Clear All") {
+                    geoSurvey.clearSurvey()
+                    deletePoints(at: IndexSet(0..<geoSurvey.lines.count))
                 }
                 .padding()
             }
-            .navigationTitle("Survey")
-            .toolbar {
-                /*ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
-                }*/
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        presentationMode.wrappedValue.dismiss()
+            ScrollView {
+                    LazyVStack(alignment: .leading) {
+                        ForEach(geoSurvey.lines.indices, id: \.self) { index in
+                            SurveyPointView(line: geoSurvey.lines[index], index: index, deletePoint: {ind in deletePoints(at: IndexSet(integer: ind))})
+                        }
+                        .onDelete(perform: deletePoints)
+                        .onMove(perform: movePoints)
                     }
+                    .padding(.horizontal)
                 }
-            }
+                .frame(height: 100)
         }
     }
     
@@ -107,6 +90,7 @@ struct SurveyView: View {
         geoSurvey.lines.remove(atOffsets: offsets)
     }
     
+    
     func movePoints(from source: IndexSet, to destination: Int) {
         geoSurvey.lines.move(fromOffsets: source, toOffset: destination)
     }
@@ -115,6 +99,10 @@ struct SurveyView: View {
 struct SurveyPointView: View {
     var line: Line3D
     
+    let index: Int
+    
+    let deletePoint: (Int) -> Void
+    
     var body: some View {
         let (lon, lat, alt) = cartesianToSpherical(point: line.point)
         HStack {
@@ -122,6 +110,10 @@ struct SurveyPointView: View {
             Text("Alt: \(String(format: "%.0f", alt)) (m)")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
+            Spacer()
+            Button(action: { deletePoint(index) }){
+                Image(systemName: "trash")
+            }
         }
     }
 }
