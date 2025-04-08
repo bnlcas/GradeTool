@@ -10,9 +10,10 @@ import CoreMotion
 import SensorKit
 import CameraView
 
-enum GradeUnits{
+enum GradeUnits: String, CaseIterable, Identifiable {
     case degrees
     case percentGrade
+    var id: String { self.rawValue }
 }
 
 enum InstrumentMode {
@@ -32,11 +33,23 @@ struct ContentView: View {
     @State var gradeAngle: Double?
     @State var horizontalAngle : Double = 0.0
         
-    @State var cameraBasedLevel = false
+    @AppStorage("cameraLevel") var cameraBasedLevel = false
         
     @State var hasPassedDebounceThreshold = true
     
+    @AppStorage("gradeUnits") private var gradeUnitsRawValue: String = GradeUnits.percentGrade.rawValue
+
+    // A computed property that converts the raw value to our enum.
     @State var gradeUnits : GradeUnits = .percentGrade
+    
+    /*GradeUnits {
+        get {
+            GradeUnits(rawValue: gradeUnitsRawValue) ?? .percentGrade
+        }
+        set {
+            gradeUnitsRawValue = newValue.rawValue
+        }
+    }*/
         
     let debounceThresholdGrade = 1.0
     

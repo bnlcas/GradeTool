@@ -104,7 +104,7 @@ struct SurveyPointView: View {
     let deletePoint: (Int) -> Void
     
     var body: some View {
-        let (lon, lat, alt) = cartesianToSpherical(point: line.point)
+        let (lon, lat, alt) = cartesianToSpherical(point: line.point.vector)
         HStack {
             Text("Lat: \(String(format: "%.2f", lat))°, Long: \(String(format: "%.2f", lon))°")
             Text("Alt: \(String(format: "%.0f", alt)) (m)")

@@ -9,14 +9,35 @@
 import simd
 import CoreMotion
 
-struct Line3D {
-    var point: SIMD3<Double>
-    var direction: SIMD3<Double>
+struct SIMD3Double: Codable {
+    var x: Double
+    var y: Double
+    var z: Double
+
+    init(_ vector: SIMD3<Double>) {
+        self.x = vector.x
+        self.y = vector.y
+        self.z = vector.z
+    }
+
+    var vector: SIMD3<Double> {
+        return SIMD3<Double>(x, y, z)
+    }
 }
 
+struct Line3D: Codable, Identifiable {
+    var id: UUID = UUID()
+    var point: SIMD3Double
+    var direction: SIMD3Double
+}
 
 class GeoSurvey: ObservableObject {
-    var lines : [Line3D] = []
+    @Published var lines: [Line3D] = [] {
+        didSet {
+            saveLines()
+            updateSurveyStats()
+        }
+    }
     
     @Published var surveyDistance: Double = 0.0
     @Published var surveyElevation: Double = 0.0
@@ -26,6 +47,24 @@ class GeoSurvey: ObservableObject {
         Line3D(point: SIMD3<Double>(1, 0, 0), direction: SIMD3<Double>(0, 1, 1)),
         Line3D(point: SIMD3<Double>(0, 1, 0), direction: SIMD3<Double>(1, 0, 1))
     ]*/
+    
+    init() {
+        loadLines()
+        updateSurveyStats()
+    }
+    
+    private func saveLines() {
+        if let data = try? JSONEncoder().encode(lines) {
+            UserDefaults.standard.set(data, forKey: "GeoSurveyLines")
+        }
+    }
+    
+    private func loadLines() {
+        if let data = UserDefaults.standard.data(forKey:  "GeoSurveyLines"),
+           let decodedLines = try? JSONDecoder().decode([Line3D].self, from: data) {
+            lines = decodedLines
+        }
+    }
     
     func updateSurveyStats(){
         if(self.lines.count > 1){
@@ -54,7 +93,9 @@ class GeoSurvey: ObservableObject {
     func addSurveyPoint(latitude: Double, longitude: Double, elevation: Double, attitude: CMAttitude) {
         let point = coordinateToSIMD3(longitude: longitude, latitude: latitude, elevation: elevation)
         let direction = deviceAttitudeToDirectionVector(attitude: attitude)
-        lines.append(Line3D(point: point, direction: direction))
+        lines.append(Line3D(point: SIMD3Double(point), direction: SIMD3Double(direction)))
+
+            //Line3D(point: point, direction: direction))
         updateSurveyStats()
     }
     
@@ -77,14 +118,14 @@ class GeoSurvey: ObservableObject {
         var pathLength = simd_double1(0.0)
         //pathLength += simd_distance(lines[0].point, lines.last!.point)
         for i in 0..<(lines.count - 1) {
-            pathLength += simd_distance(lines[i].point, lines[i+1].point)
+            pathLength += simd_distance(lines[i].point.vector, lines[i+1].point.vector)
         }
         return pathLength
     }
     
     func surveyPathElevationGain() -> simd_double1 {
-        let (_, _, altitude0) = cartesianToSpherical(point: lines[0].point)
-        let (_, _, altitude1) = cartesianToSpherical(point: lines.last!.point)
+        let (_, _, altitude0) = cartesianToSpherical(point: lines[0].point.vector)
+        let (_, _, altitude1) = cartesianToSpherical(point: lines.last!.point.vector)
         return altitude1 - altitude0
     }
     
@@ -96,13 +137,13 @@ class GeoSurvey: ObservableObject {
         
         for line in lines {
             // Normalize the direction vector (if not already normalized)
-            let u = simd_normalize(line.direction)
+            let u = simd_normalize(line.direction.vector)
             
             // Projection matrix onto the plane perpendicular to u: P = I - u * u^T
             let P = matrix_identity_double3x3 - outerProduct(u)
             
             A += P
-            b += P * line.point
+            b += P * line.point.vector
         }
         
         // Check that A is invertible by testing its determinant.
