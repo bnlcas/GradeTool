@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreMotion
 import SensorKit
-import CameraView
+//import CameraView
 
 enum GradeUnits: String, CaseIterable, Identifiable {
     case degrees
@@ -56,6 +56,8 @@ struct ContentView: View {
     @State private var showSurveyView = false
     
     @State private var currentAttitude: CMAttitude? = nil
+    
+    @StateObject var geoSurvey: GeoSurvey = GeoSurvey()
 
     func hapticFeedback() {
         let generator = UIImpactFeedbackGenerator(style: .light)
@@ -71,6 +73,22 @@ struct ContentView: View {
         let theta = acos(dot) - 1.5707963267948966
         return theta
     }
+    
+    func addSurveyPoint() {
+        guard let location = locationManager.location, let attitude = self.currentAttitude else {
+            print("Location or Attitude not available.")
+            return
+        }
+        geoSurvey.addSurveyPoint(latitude: location.coordinate.latitude,
+                                 longitude: location.coordinate.longitude,
+                                 elevation: location.altitude,
+                                 attitude: attitude)
+    }
+    
+    func deleteSurveyPoints(at offsets: IndexSet) {
+        geoSurvey.lines.remove(atOffsets: offsets)
+    }
+    
     
     var body: some View {
         VStack {
@@ -108,7 +126,7 @@ struct ContentView: View {
                             CameraFeedTargetingView()
                             ReticleView()
                         }
-                        .frame(width: geometry.size.width, height: geometry.size.width*4/3)
+                        .frame(width: geometry.size.width, height: geometry.size.width)
                         .transition(.move(edge: .leading))
                         
                     } else{
@@ -130,39 +148,59 @@ struct ContentView: View {
                     HStack(alignment: .top){
                         VStack(alignment: .leading){
                             HStack{
-                                Text(String(format: "Latitude: %.2f°,", location.coordinate.latitude))
+                                Text(String(format: "Latitude: %.3f°,", location.coordinate.latitude))
                                 
-                                Text(String(format: "Longitude: %.2f°",
+                                Text(String(format: "Longitude: %.3f°",
                                             location.coordinate.longitude))
                             }
                             Text(String(format: "Elevation: %.1f (m)",
                                         location.altitude))
                         }
-                        .padding(8)
+                        .padding()
                         Spacer()
                     }
                 } else {
                     Text("Getting location...")
                 }
-                    
-                
+                HStack{
+                    VStack(alignment: .leading) {
+                        Text("Total Path Distance: \(String(format: "%.1f", geoSurvey.surveyDistance)) (m)")
+                        Text("Elevation Gain: \(String(format: "%.1f", geoSurvey.surveyElevation)) (m)")
+                        Text("Target Elevation: \(String(format: "%.1f", geoSurvey.targetPointElevation)) (m)")
+                    }
+                    Spacer()
+                }
+                .padding()
+                HStack {
+                    Button(action: {
+                        withAnimation(Animation.linear(duration: 0.4)){
+                            self.showSurveyView = true
+                        }
+                    }){
+                        HStack{
+                            Text("Survey Plot")
+                            Image(systemName: "map.circle")
+                        }
+                    }
+                    .padding()
+                    Spacer()
+                    Button(action: {
+                        addSurveyPoint()
+                    }){
+                        HStack{
+                            Text("Add Point")
+                            Image(systemName: "mappin.and.ellipse.circle")
+                        }
+                        //.background(.blue)
+                        //.foregroundColor(Color.white)
+                    }
+                    .padding()
+                }
             } else{
                 Text("Geolocation Unavailable")
+                Spacer()
             }
-            Spacer()
-            Button(action: {
-                withAnimation(Animation.linear(duration: 0.4)){
-                    self.showSurveyView = true
-                }
-            }){
-                Text("Survey")
-                    .padding(22)
-                    .frame(width: 222, height: 44)
-                    .background(Color(hue: 0.1, saturation: 0.8, brightness: 0.7))
-                    .foregroundColor(Color.white)
-                    .cornerRadius(11)
-                .frame(width: 222, height: 44)
-            }
+
             
             /*
             HStack{
@@ -248,10 +286,12 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showSurveyView) {
             // Pass the current location and attitude into SurveyView.
-            SurveyView(currentLocation: locationManager.location, currentAttitude: currentAttitude)
-                .presentationDetents([.fraction(0.5)])
+            SurveyView(geoSurvey: geoSurvey, addPoint: { addSurveyPoint() })
+                .presentationDetents([.fraction(0.6)])
+
         }
     }
+
 }
 
 #Preview {

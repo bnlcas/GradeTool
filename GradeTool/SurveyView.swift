@@ -21,13 +21,11 @@ func cartesianToSpherical(point: SIMD3<Double>) -> (longitude: Double, latitude:
 }
 
 struct SurveyView: View {
-    @StateObject var geoSurvey: GeoSurvey = GeoSurvey()
-    
-    // These values can be passed in from ContentView (e.g. current location and attitude).
-    var currentLocation: CLLocation?
-    var currentAttitude: CMAttitude?
+    @ObservedObject var geoSurvey: GeoSurvey// = GeoSurvey()
     
     @Environment(\.presentationMode) var presentationMode
+    
+    let addPoint: () -> Void
     
     var body: some View {
         VStack{
@@ -40,26 +38,22 @@ struct SurveyView: View {
                 }
             }
             .padding()
+            ElevationPlotView(height: 250)
             HStack{
-                VStack(alignment: .leading) {
-                    Text("Total Path Distance: \(String(format: "%.2f", geoSurvey.surveyDistance)) m")
-                    Text("Elevation Gain: \(String(format: "%.2f", geoSurvey.surveyElevation)) m")
-                    Text("Target Elevation \(String(format: "%.2f", geoSurvey.targetPointElevation)) (m)")
-                }
-                Spacer()
-            }
-            .padding()
-            HStack {
-                Button("Add Survey Point") {
-                    addSurveyPoint()
-                }
-                .padding()
-                Spacer()
-                Button("Clear All") {
+                Button(action: {
                     geoSurvey.clearSurvey()
-                    deletePoints(at: IndexSet(0..<geoSurvey.lines.count))
+                    print("clear count: \(geoSurvey.lines.count)")
+                    addPoint()
+                    print("clear count: \(geoSurvey.lines.count)")
+                })
+                {
+                    HStack{
+                        Text("New Survey")
+                        Image(systemName: "trash")
+                    }
                 }
                 .padding()
+                Spacer()
             }
             ScrollView {
                     LazyVStack(alignment: .leading) {
@@ -75,21 +69,10 @@ struct SurveyView: View {
         }
     }
     
-    func addSurveyPoint() {
-        guard let location = currentLocation, let attitude = currentAttitude else {
-            print("Location or Attitude not available.")
-            return
-        }
-        geoSurvey.addSurveyPoint(latitude: location.coordinate.latitude,
-                                 longitude: location.coordinate.longitude,
-                                 elevation: location.altitude,
-                                 attitude: attitude)
-    }
-    
     func deletePoints(at offsets: IndexSet) {
         geoSurvey.lines.remove(atOffsets: offsets)
     }
-    
+
     
     func movePoints(from source: IndexSet, to destination: Int) {
         geoSurvey.lines.move(fromOffsets: source, toOffset: destination)
@@ -106,7 +89,7 @@ struct SurveyPointView: View {
     var body: some View {
         let (lon, lat, alt) = cartesianToSpherical(point: line.point.vector)
         HStack {
-            Text("Lat: \(String(format: "%.2f", lat))°, Long: \(String(format: "%.2f", lon))°")
+            Text("Lat: \(String(format: "%.3f", lat))°, Long: \(String(format: "%.3f", lon))°")
             Text("Alt: \(String(format: "%.0f", alt)) (m)")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -119,5 +102,5 @@ struct SurveyPointView: View {
 }
 
 #Preview {
-    SurveyView()
+    SurveyView(geoSurvey: GeoSurvey(), addPoint: {})//geoSurvey: GeoSurvey())
 }

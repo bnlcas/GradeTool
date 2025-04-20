@@ -42,6 +42,8 @@ class GeoSurvey: ObservableObject {
     @Published var surveyDistance: Double = 0.0
     @Published var surveyElevation: Double = 0.0
     @Published var targetPointElevation: Double = 0.0
+    
+    var deviceLevelForward = true
     /*
         Line3D(point: SIMD3<Double>(0, 0, 0), direction: SIMD3<Double>(1, 1, 0)),
         Line3D(point: SIMD3<Double>(1, 0, 0), direction: SIMD3<Double>(0, 1, 1)),
@@ -69,15 +71,15 @@ class GeoSurvey: ObservableObject {
     func updateSurveyStats(){
         if(self.lines.count > 1){
             surveyDistance = surveyPathOdometer()
-            print("survey distance: \(surveyDistance) (m?)")
+            //print("survey distance: \(surveyDistance) (m?)")
 
             surveyElevation = surveyPathElevationGain()
-            print("survey distance: \(surveyElevation) (m?)")
+            //print("survey distance: \(surveyElevation) (m?)")
             
             if let intersectionPoint = leastSquaresIntersection(of: self.lines) {
                 let (longitude, latitude, altitude) = cartesianToSpherical(point: intersectionPoint)
-                print("Least-squares intersection point: \(intersectionPoint)")
-                print("long: \(longitude), lag: \(latitude), elevation: \(altitude)")
+                //print("Least-squares intersection point: \(intersectionPoint)")
+                //print("long: \(longitude), lag: \(latitude), elevation: \(altitude)")
                 
                 targetPointElevation = altitude
             } else {
@@ -93,9 +95,10 @@ class GeoSurvey: ObservableObject {
     func addSurveyPoint(latitude: Double, longitude: Double, elevation: Double, attitude: CMAttitude) {
         let point = coordinateToSIMD3(longitude: longitude, latitude: latitude, elevation: elevation)
         let direction = deviceAttitudeToDirectionVector(attitude: attitude)
+        
+        print("device direction: \(direction)")
         lines.append(Line3D(point: SIMD3Double(point), direction: SIMD3Double(direction)))
 
-            //Line3D(point: point, direction: direction))
         updateSurveyStats()
     }
     
@@ -103,7 +106,6 @@ class GeoSurvey: ObservableObject {
         lines = []
         updateSurveyStats()
     }
-
 
     
     func outerProduct(_ u: SIMD3<Double>) -> simd_double3x3 {
@@ -128,7 +130,7 @@ class GeoSurvey: ObservableObject {
         let (_, _, altitude1) = cartesianToSpherical(point: lines.last!.point.vector)
         return altitude1 - altitude0
     }
-    
+        
     func leastSquaresIntersection(of lines: [Line3D]) -> SIMD3<Double>? {
         guard !lines.isEmpty else { return nil }
         
@@ -160,7 +162,8 @@ class GeoSurvey: ObservableObject {
     
     func coordinateToSIMD3(longitude: Double, latitude: Double, elevation: Double) -> SIMD3<Double> {
         // Earth's mean radius in meters (approximation)
-        let earthRadius = 6371000.0
+        let earthRadius = 6378137.0//equator
+        //6356752.0//Polar
         
         // Convert degrees to radians.
         let latRad = latitude * .pi / 180.0
