@@ -38,7 +38,7 @@ struct SurveyView: View {
                 }
             }
             .padding()
-            ElevationPlotView(height: 250)
+            ElevationPlotView(data: $geoSurvey.surveyPoints, height: 250)
             HStack{
                 Button(action: {
                     geoSurvey.clearSurvey()

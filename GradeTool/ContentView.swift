@@ -58,6 +58,8 @@ struct ContentView: View {
     @State private var currentAttitude: CMAttitude? = nil
     
     @StateObject var geoSurvey: GeoSurvey = GeoSurvey()
+    
+    let showSurveyTargetElevation = false
 
     func hapticFeedback() {
         let generator = UIImpactFeedbackGenerator(style: .light)
@@ -160,13 +162,15 @@ struct ContentView: View {
                         Spacer()
                     }
                 } else {
-                    Text("Getting location...")
+                    Text("Getting Location...")
                 }
                 HStack{
                     VStack(alignment: .leading) {
                         Text("Total Path Distance: \(String(format: "%.1f", geoSurvey.surveyDistance)) (m)")
                         Text("Elevation Gain: \(String(format: "%.1f", geoSurvey.surveyElevation)) (m)")
-                        Text("Target Elevation: \(String(format: "%.1f", geoSurvey.targetPointElevation)) (m)")
+                        if(showSurveyTargetElevation){
+                            Text("Target Elevation: \(String(format: "%.1f", geoSurvey.targetPointElevation)) (m)")
+                        }
                     }
                     Spacer()
                 }

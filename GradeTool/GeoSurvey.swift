@@ -31,6 +31,12 @@ struct Line3D: Codable, Identifiable {
     var direction: SIMD3Double
 }
 
+struct SurveyPoint: Equatable {
+    var id: Int
+    var distance: Double
+    var elevation: Double
+}
+
 class GeoSurvey: ObservableObject {
     @Published var lines: [Line3D] = [] {
         didSet {
@@ -38,6 +44,8 @@ class GeoSurvey: ObservableObject {
             updateSurveyStats()
         }
     }
+    
+    @Published var surveyPoints: [SurveyPoint] = []
     
     @Published var surveyDistance: Double = 0.0
     @Published var surveyElevation: Double = 0.0
@@ -76,6 +84,8 @@ class GeoSurvey: ObservableObject {
             surveyElevation = surveyPathElevationGain()
             //print("survey distance: \(surveyElevation) (m?)")
             
+            surveyPoints.append(SurveyPoint(id: lines.count, distance: surveyDistance, elevation: surveyElevation))
+
             if let intersectionPoint = leastSquaresIntersection(of: self.lines) {
                 let (longitude, latitude, altitude) = cartesianToSpherical(point: intersectionPoint)
                 //print("Least-squares intersection point: \(intersectionPoint)")
@@ -89,6 +99,8 @@ class GeoSurvey: ObservableObject {
             surveyDistance = 0.0
             surveyElevation = 0.0
             targetPointElevation = 0.0
+            
+            surveyPoints.append(SurveyPoint(id:1, distance: surveyDistance, elevation: surveyElevation))
         }
     }
     

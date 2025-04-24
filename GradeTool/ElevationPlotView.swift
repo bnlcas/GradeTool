@@ -6,55 +6,70 @@
 //
 
 import SwiftUI
+import Charts
+
 
 struct ElevationPlotView: View {
     //@ObservedObject var geoSurvey: GeoSurvey = GeoSurvey()
     //geoSurvey.lines.count > 0
+    
+    @Binding var data: [SurveyPoint]
+    /*= [SurveyPoint(id: 0, distance: 0.0, elevation: 1330.0),
+                                      SurveyPoint(id: 1, distance: 100.0, elevation: 1100.0),
+                                      SurveyPoint(id: 2, distance: 222.0, elevation: 1250.0),
+                                      SurveyPoint(id: 3, distance: 333.0, elevation: 1550.0),
+                                      SurveyPoint(id: 4, distance: 444.0, elevation: 1530.0),
+                                      SurveyPoint(id: 5, distance: 554.0, elevation: 1532.0),
+    ]*/
     let height : CGFloat
+
+    @State private var showGradient = true
+    @State private var gradientRange = 0.4
+    @State private var chartColor: Color = .red
+
+    private var gradient: Gradient {
+        var colors = [chartColor]
+        if showGradient {
+            colors.append(chartColor.opacity(gradientRange))
+        }
+        return Gradient(colors: colors)
+    }
     
     var body: some View {
-        GeometryReader { geometry in
-            if(1 > 0){
-                
-                Path { path in
-                    let x_origin = geometry.size.width * 0.1
-                    let y_origin = geometry.size.height * 0.9
+        Chart(data, id: \.id) {
+            AreaMark(
+                x: .value("Distance", $0.distance),
+                y: .value("Elevation", $0.elevation)
+            )
+            .foregroundStyle(gradient)
+            .interpolationMethod(.linear)
 
-                    let x_end = geometry.size.width * 0.9
-                    let y_end = geometry.size.height * 0.9
-                    
-                    let x0 = geometry.size.width * 0.1
-                    let y0 = geometry.size.height * 0.8
-                    
-                    let x1 = geometry.size.width * 0.3
-                    let x2 = geometry.size.width * 0.5
-                    let x3 = geometry.size.width * 0.7
-                    let x4 = geometry.size.width * 0.9
-                    
-                    let y1 = geometry.size.height * 0.4
-                    let y2 = geometry.size.height * 0.7
-                    let y3 = geometry.size.height * 0.1
-                    let y4 = geometry.size.height * 0.2
-                    
-                    path.move(to: CGPoint(x: x_origin, y: y_origin))
-                    
-                    path.addLines([
-                        CGPoint(x: x0, y: y0),
-                        CGPoint(x: x1, y: y1),
-                        CGPoint(x: x2, y: y2),
-                        CGPoint(x: x3, y: y3),
-                        CGPoint(x: x4, y: y4),
-                        CGPoint(x: x_end, y: y_end),
-                        CGPoint(x: x_origin, y: y_origin)
-                    ])
-                }
-                .fill(Gradient(colors: [.red, .red, .black]))
-            }
+            LineMark(
+                x: .value("Distance", $0.distance),
+                y: .value("Elevation", $0.elevation)
+            )
+            //.accessibilityLabel($0.day.formatted(date: .complete, time: .omitted))
+            //.accessibilityValue("\($0.sales) (m)")
+            .accessibilityHidden(true)//isOverview)
+            .lineStyle(StrokeStyle(lineWidth: 2.0))
+            .interpolationMethod(.linear)// interpolationMethod.mode)
+            .foregroundStyle(chartColor)
         }
+        .chartXAxisLabel("distance (m)")
+        .chartYAxisLabel("elevation (m)")
+        //.accessibilityChartDescriptor(self)
+        .chartYAxis(.visible)
+        .chartXAxis(.visible)
         .frame(width: 400, height: self.height)
     }
 }
 
 #Preview {
-    ElevationPlotView(height: 250)
+    ElevationPlotView(data: .constant([SurveyPoint(id: 0, distance: 0.0, elevation: 1330.0),
+                                             SurveyPoint(id: 1, distance: 100.0, elevation: 1100.0),
+                                             SurveyPoint(id: 2, distance: 222.0, elevation: 1250.0),
+                                             SurveyPoint(id: 3, distance: 333.0, elevation: 1550.0),
+                                             SurveyPoint(id: 4, distance: 444.0, elevation: 1530.0),
+                                             SurveyPoint(id: 5, distance: 554.0, elevation: 1532.0),
+           ]),  height: 250)
 }
