@@ -12,6 +12,7 @@
 		E38948822C8E929A001CCBA9 /* SlopeVisualizerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38948812C8E929A001CCBA9 /* SlopeVisualizerView.swift */; };
 		E38948842C8E949C001CCBA9 /* ReticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38948832C8E949C001CCBA9 /* ReticleView.swift */; };
 		E38948882C92A53A001CCBA9 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38948872C92A53A001CCBA9 /* LocationManager.swift */; };
+		E3A03C992DB12ABA00974608 /* ElevationPlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3A03C982DB12ABA00974608 /* ElevationPlotView.swift */; };
 		E3AF95092B545AED00413374 /* GradeToolApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3AF95082B545AED00413374 /* GradeToolApp.swift */; };
 		E3AF950B2B545AED00413374 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3AF950A2B545AED00413374 /* ContentView.swift */; };
 		E3AF950D2B545AEF00413374 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E3AF950C2B545AEF00413374 /* Assets.xcassets */; };
@@ -26,6 +27,7 @@
 		E38948812C8E929A001CCBA9 /* SlopeVisualizerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlopeVisualizerView.swift; sourceTree = "<group>"; };
 		E38948832C8E949C001CCBA9 /* ReticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReticleView.swift; sourceTree = "<group>"; };
 		E38948872C92A53A001CCBA9 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		E3A03C982DB12ABA00974608 /* ElevationPlotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElevationPlotView.swift; sourceTree = "<group>"; };
 		E3AF95052B545AED00413374 /* GradeTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GradeTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3AF95082B545AED00413374 /* GradeToolApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradeToolApp.swift; sourceTree = "<group>"; };
 		E3AF950A2B545AED00413374 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				E38948652C8CCE86001CCBA9 /* SensorManager.swift */,
 				E38948872C92A53A001CCBA9 /* LocationManager.swift */,
 				E3D325302DA18E9F00184A09 /* GeoSurvey.swift */,
+				E3A03C982DB12ABA00974608 /* ElevationPlotView.swift */,
 			);
 			path = GradeTool;
 			sourceTree = "<group>";
@@ -171,6 +174,7 @@
 				E38948822C8E929A001CCBA9 /* SlopeVisualizerView.swift in Sources */,
 				E3D325312DA18E9F00184A09 /* GeoSurvey.swift in Sources */,
 				E38948882C92A53A001CCBA9 /* LocationManager.swift in Sources */,
+				E3A03C992DB12ABA00974608 /* ElevationPlotView.swift in Sources */,
 				E3AF95092B545AED00413374 /* GradeToolApp.swift in Sources */,
 				E3D325352DA1D31700184A09 /* CameraFeedTargetingView.swift in Sources */,
 				E38948662C8CCE86001CCBA9 /* SensorManager.swift in Sources */,

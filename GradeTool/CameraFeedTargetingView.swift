@@ -20,6 +20,7 @@ struct CameraFeedTargetingView: View {
                 .frame(width: side, height: side, alignment: .center)
                 .clipped() // crop any overflow
                 .cornerRadius(8)
+                .clipShape(Rectangle())
                 .gesture(
                     MagnificationGesture()
                         .onChanged { value in
@@ -41,7 +42,9 @@ struct CameraPreviewView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> CameraPreviewUIView {
         let view = CameraPreviewUIView()
-        view.setupSession()
+        DispatchQueue.main.async {
+            view.setupSession()
+        }
         return view
     }
 
@@ -65,7 +68,7 @@ class CameraPreviewUIView: UIView {
 
     func setupSession() {
         let session = AVCaptureSession()
-        session.sessionPreset = .high
+        session.sessionPreset = .medium// .high
 
         // Get the back, built-in wide-angle camera.
         guard let device = AVCaptureDevice.default(.builtInWideAngleCamera,
@@ -74,7 +77,7 @@ class CameraPreviewUIView: UIView {
             print("No back camera available")
             return
         }
-
+        
         do {
             let input = try AVCaptureDeviceInput(device: device)
             if session.canAddInput(input) {
@@ -106,4 +109,24 @@ class CameraPreviewUIView: UIView {
             print("Error setting zoom: \(error)")
         }
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        previewLayer.frame = bounds
+        if let connection = previewLayer.connection, connection.isVideoRotationAngleSupported(90.0) {
+            connection.videoRotationAngle = 90.0
+        }
+        
+        // Assume the camera feed is 4:3.
+        // When filling a square view (width == height), the scaled height is:
+        let cameraAspectRatio: CGFloat = 1.0// 4.0 / 3.0
+        let scaledHeight = bounds.width * cameraAspectRatio
+        // Calculate how much extra height exists and shift upward by half that.
+        let verticalOverflow = scaledHeight - bounds.height
+        let yOffset = verticalOverflow / 2.0
+        
+        // Apply a translation transform to the preview layer to shift it upward.
+        previewLayer.setAffineTransform(CGAffineTransform(translationX: 0, y: -yOffset))
+    }
 }
+

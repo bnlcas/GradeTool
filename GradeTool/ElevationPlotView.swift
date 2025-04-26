@@ -55,11 +55,12 @@ struct ElevationPlotView: View {
             .interpolationMethod(.linear)// interpolationMethod.mode)
             .foregroundStyle(chartColor)
         }
-        .chartXAxisLabel("distance (m)")
-        .chartYAxisLabel("elevation (m)")
+        .chartXAxisLabel("Distance (m)")
+        .chartYAxisLabel("Elevation (m)")
         //.accessibilityChartDescriptor(self)
         .chartYAxis(.visible)
         .chartXAxis(.visible)
+        //.chartXScale(range: [0.0, CGFloat(data.last!.distance)])
         .frame(width: 400, height: self.height)
     }
 }
@@ -70,6 +71,6 @@ struct ElevationPlotView: View {
                                              SurveyPoint(id: 2, distance: 222.0, elevation: 1250.0),
                                              SurveyPoint(id: 3, distance: 333.0, elevation: 1550.0),
                                              SurveyPoint(id: 4, distance: 444.0, elevation: 1530.0),
-                                             SurveyPoint(id: 5, distance: 554.0, elevation: 1532.0),
+                                             SurveyPoint(id: 5, distance: 554.0, elevation: 532.0),
            ]),  height: 250)
 }
