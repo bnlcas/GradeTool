@@ -102,23 +102,25 @@ class GeoSurvey: ObservableObject {
             surveyElevation = 0.0
             targetPointElevation = 0.0
             
-            surveyPoints.append(SurveyPoint(id:1, distance: surveyDistance, elevation: surveyElevation))
+            surveyPoints.append(SurveyPoint(id:0, distance: surveyDistance, elevation: surveyElevation))
         }
+        print(surveyPoints)
     }
     
     func addSurveyPoint(latitude: Double, longitude: Double, elevation: Double, attitude: CMAttitude) {
         let point = coordinateToSIMD3(longitude: longitude, latitude: latitude, elevation: elevation)
         let direction = deviceAttitudeToDirectionVector(attitude: attitude)
         
-        print("device direction: \(direction)")
+        //print("device direction: \(direction)")
         lines.append(Line3D(point: SIMD3Double(point), direction: SIMD3Double(direction)))
-
-        updateSurveyStats()
+        print("add survey point")
+        //updateSurveyStats()
     }
     
     func clearSurvey(){
         lines = []
-        updateSurveyStats()
+        surveyPoints = []
+        //updateSurveyStats()
     }
 
     

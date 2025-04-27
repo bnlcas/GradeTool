@@ -37,13 +37,13 @@ struct ElevationPlotView: View {
     
     var body: some View {
         Chart(data, id: \.id) {
-            AreaMark(
+            /*AreaMark(
                 x: .value("Distance", $0.distance),
                 y: .value("Elevation", $0.elevation)
             )
             .foregroundStyle(gradient)
             .interpolationMethod(.linear)
-
+             */
             LineMark(
                 x: .value("Distance", $0.distance),
                 y: .value("Elevation", $0.elevation)
@@ -61,7 +61,7 @@ struct ElevationPlotView: View {
         .chartYAxis(.visible)
         .chartXAxis(.visible)
         //.chartXScale(range: [0.0, CGFloat(data.last!.distance)])
-        .frame(width: 400, height: self.height)
+        .frame(height: self.height)
     }
 }
 

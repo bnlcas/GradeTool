@@ -8,6 +8,61 @@
 import SwiftUI
 import CoreMotion
 import CoreLocation
+import UniformTypeIdentifiers
+
+
+
+func exportLinesCSV(_ lines: [Line3D]) -> URL? {
+    // CSV header
+    let header = "point_id,point_x,point_y,point_z,direction_x,direction_y,direction_z"
+    var csv = header + "\n"
+    
+    // One row per Line3D
+    for line in lines {
+        let px = line.point.x
+        let py = line.point.y
+        let pz = line.point.z
+        let dx = line.direction.x
+        let dy = line.direction.y
+        let dz = line.direction.z
+        
+        let row = [
+            line.id.uuidString,
+            String(px), String(py), String(pz),
+            String(dx), String(dy), String(dz)
+        ].joined(separator: ",")
+        
+        csv += row + "\n"
+    }
+    
+    // Write to a temp file
+    let filename = "Lines3D_\(Date().timeIntervalSince1970).csv"
+    let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
+    
+    do {
+        try csv.data(using: .utf8)?.write(to: tmpURL)
+        return tmpURL
+    } catch {
+        print("Failed to write CSV:", error)
+        return nil
+    }
+}
+
+struct LinesCSVFile: Transferable {
+    let lines: [Line3D]
+
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(exportedContentType: .commaSeparatedText) { item in
+            // generate the CSV on‐demand
+            guard let csv_url = exportLinesCSV(item.lines) else {
+                throw CocoaError(.fileWriteUnknown)
+            }
+            return SentTransferredFile(csv_url)
+
+            // wrap it in a SentTransferredFile
+        }
+    }
+}
 
 // A helper function to convert a Cartesian point back to spherical coordinates.
 func cartesianToSpherical(point: SIMD3<Double>) -> (longitude: Double, latitude: Double, altitude: Double) {
@@ -33,7 +88,7 @@ struct SurveyView: View {
                 Spacer()
             }
             .padding()
-            ElevationPlotView(data: $geoSurvey.surveyPoints, height: 250)
+                ElevationPlotView(data: $geoSurvey.surveyPoints, height: 250)
             HStack{
                 Button(action: {
                     geoSurvey.clearSurvey()
@@ -49,6 +104,19 @@ struct SurveyView: View {
                 }
                 .padding()
                 Spacer()
+                ShareLink(
+                            item: LinesCSVFile(lines: geoSurvey.lines),
+                                preview: SharePreview(
+                                  "Survey Lines CSV",
+                                  icon: Image(systemName: "doc.text")
+                                )
+                            ) {
+                                Label("Export Points", systemImage: "square.and.arrow.up")
+                                    .font(.headline)
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 16)
+                            }
+                            .disabled(geoSurvey.lines.isEmpty)
             }
             /*
             ScrollView {
