@@ -35,24 +35,11 @@ struct ContentView: View {
     @State var gradeAngle: Double?
     @State var horizontalAngle : Double = 0.0
         
-    @AppStorage("cameraLevel") private var instrumentModeRawValue: String = InstrumentMode.level.rawValue
-    @State var instrumentMode : InstrumentMode = .level
+    @AppStorage("deviceMode") var instrumentMode : InstrumentMode = .level
     
-    //cameraBasedLevel
+    @AppStorage("gradeUnits") var gradeUnits : GradeUnits = .percentGrade
 
     @State var hasPassedDebounceThreshold = true
-    
-    @AppStorage("gradeUnits") private var gradeUnitsRawValue: String = GradeUnits.percentGrade.rawValue
-    @State var gradeUnits : GradeUnits = .percentGrade
-    
-    /*GradeUnits {
-        get {
-            GradeUnits(rawValue: gradeUnitsRawValue) ?? .percentGrade
-        }
-        set {
-            gradeUnitsRawValue = newValue.rawValue
-        }
-    }*/
         
     let debounceThresholdGrade = 1.0
     
@@ -102,7 +89,7 @@ struct ContentView: View {
                     Group{
                         GeometryReader { geometry in
                             ZStack{
-                                CameraFeedTargetingView()
+                                CameraFeedTargetingView(isActive:  .constant(instrumentMode == .camera))
                                 ReticleView()
                             }
                             .frame(width: geometry.size.width, height: geometry.size.width)
