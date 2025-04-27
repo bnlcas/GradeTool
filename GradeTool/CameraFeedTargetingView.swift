@@ -19,7 +19,7 @@ struct CameraFeedTargetingView: View {
             CameraPreviewView(zoomFactor: $zoomFactor)
                 .frame(width: side, height: side, alignment: .center)
                 .clipped() // crop any overflow
-                .cornerRadius(8)
+                //.cornerRadius(8)
                 .clipShape(Rectangle())
                 .gesture(
                     MagnificationGesture()

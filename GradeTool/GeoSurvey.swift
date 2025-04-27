@@ -50,6 +50,8 @@ class GeoSurvey: ObservableObject {
     @Published var surveyDistance: Double = 0.0
     @Published var surveyElevation: Double = 0.0
     @Published var targetPointElevation: Double = 0.0
+    @Published var averageGrade: Double = 0.0
+
     
     var deviceLevelForward = true
     /*
@@ -83,7 +85,7 @@ class GeoSurvey: ObservableObject {
 
             surveyElevation = surveyPathElevationGain()
             //print("survey distance: \(surveyElevation) (m?)")
-            
+            averageGrade = 100 * surveyElevation / surveyDistance
             surveyPoints.append(SurveyPoint(id: lines.count, distance: surveyDistance, elevation: surveyElevation))
 
             if let intersectionPoint = leastSquaresIntersection(of: self.lines) {

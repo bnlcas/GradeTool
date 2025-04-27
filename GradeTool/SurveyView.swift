@@ -23,8 +23,6 @@ func cartesianToSpherical(point: SIMD3<Double>) -> (longitude: Double, latitude:
 struct SurveyView: View {
     @ObservedObject var geoSurvey: GeoSurvey// = GeoSurvey()
     
-    @Environment(\.presentationMode) var presentationMode
-    
     let addPoint: () -> Void
     
     var body: some View {
@@ -33,9 +31,6 @@ struct SurveyView: View {
                 Text("Survey:")
                     .font(.title)
                 Spacer()
-                Button("Done") {
-                    presentationMode.wrappedValue.dismiss()
-                }
             }
             .padding()
             ElevationPlotView(data: $geoSurvey.surveyPoints, height: 250)
@@ -55,6 +50,7 @@ struct SurveyView: View {
                 .padding()
                 Spacer()
             }
+            /*
             ScrollView {
                     LazyVStack(alignment: .leading) {
                         ForEach(geoSurvey.lines.indices, id: \.self) { index in
@@ -66,6 +62,7 @@ struct SurveyView: View {
                     .padding(.horizontal)
                 }
                 .frame(height: 100)
+             */
         }
     }
     

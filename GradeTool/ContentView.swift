@@ -16,9 +16,11 @@ enum GradeUnits: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
 }
 
-enum InstrumentMode {
+enum InstrumentMode: String, CaseIterable, Identifiable {
     case level
     case camera
+    case survey
+    var id: String { self.rawValue }
 }
 
 struct ContentView: View {
@@ -33,13 +35,14 @@ struct ContentView: View {
     @State var gradeAngle: Double?
     @State var horizontalAngle : Double = 0.0
         
-    @AppStorage("cameraLevel") var cameraBasedLevel = false
-        
+    @AppStorage("cameraLevel") private var instrumentModeRawValue: String = InstrumentMode.level.rawValue
+    @State var instrumentMode : InstrumentMode = .level
+    
+    //cameraBasedLevel
+
     @State var hasPassedDebounceThreshold = true
     
     @AppStorage("gradeUnits") private var gradeUnitsRawValue: String = GradeUnits.percentGrade.rawValue
-
-    // A computed property that converts the raw value to our enum.
     @State var gradeUnits : GradeUnits = .percentGrade
     
     /*GradeUnits {
@@ -94,31 +97,42 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            HStack{
-                Image(systemName: "righttriangle")
-                Text("Grade:")
-                Spacer()
-            }
             if(grade != nil) {
-                HStack{
-                    switch(gradeUnits){
-                    case .degrees:
-                        Text(String(format: "%.2f", abs(gradeAngle!)) + "°")
-                            .frame(width: 80, height:25)
-                    case .percentGrade:
-                        Text(String(format: "%.2f", abs(grade!)) + "%")
-                            .frame(width: 80, height:25)
+                TabView(selection: $instrumentMode) {
+                    Group{
+                        GeometryReader { geometry in
+                            ZStack{
+                                CameraFeedTargetingView()
+                                ReticleView()
+                            }
+                            .frame(width: geometry.size.width, height: geometry.size.width)
+                        }
                     }
-
-                    //Text("\((10.0 * grade).rounded()/10.0) %")
-                    if(cameraBasedLevel){
-                        SlopeVisualizerView(height: 25, grade: $grade)
-                            .frame(width: 30, height:25)
-                            .transition(.scale(scale: 0.0, anchor: UnitPoint(x: 0.5, y: 1.0)))
-                        
+                    .tag(InstrumentMode.camera)
+                    .transition(.slide)
+                    .animation(.easeInOut(duration: 0.25), value: instrumentMode)
+                    Group{
+                        GeometryReader { geometry in
+                            SlopeVisualizerView(height: previewHeight, grade: $grade)
+                        }
                     }
-                    Spacer()
+                    .tag(InstrumentMode.level)
+                    .transition(.slide)
+                    .animation(.easeInOut(duration: 0.25), value: instrumentMode)
+                    Group{
+                        SurveyView(geoSurvey: geoSurvey, addPoint: { addSurveyPoint() })
+                    }
+                    .tag(InstrumentMode.survey)
+                    .transition(.slide)
+                    .animation(.easeInOut(duration: 0.25), value: instrumentMode)
                 }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                .transition(.slide)
+                .animation(.easeInOut(duration: 0.25), value: instrumentMode)
+                //.onChange(of:instrumentMode) { _ in
+                //`    pus<#T##(PlaceholderContentView<View>) -> View#>)
+                
+                /*
                 GeometryReader { geometry in
                     // Calculate full screen width and height as 4/3 of the width.
                     if(cameraBasedLevel){
@@ -137,18 +151,51 @@ struct ContentView: View {
                         //.transition(.scale(scale: 0.0, anchor: UnitPoint(x: 0.1, y: 0.0)))
                         
                     }
-                }
+                }*/
             } else{
                 Spacer()
                 Text("Initializing...")
                 ProgressView()
                 Spacer()
             }
+
+            if(grade != nil) {
+                HStack{
+                    Image(systemName: "righttriangle")
+
+                    switch(gradeUnits){
+                    case .degrees:
+                        Text("Grade: " + String(format: "%.1f", abs(gradeAngle!)) + "°")
+                            .frame(width: 120, height:25, alignment: .leading)
+                    case .percentGrade:
+                        Text("Grade: " + String(format: "%.1f", abs(grade!)) + "%")
+                            .frame(width: 120, height:25, alignment: .leading)
+                    }
+                    if(instrumentMode != .level){
+                        SlopeVisualizerView(height: 25, grade: $grade)
+                            .frame(width: 30, height:35)
+                            //.transition(.opacity)
+                            //.transition(.scale(scale: 0.0, anchor: UnitPoint(x: 0.5, y: 1.0)))
+                        
+                    }
+                    Spacer()
+                }
+                .padding(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 0))
+            } else {
+                HStack{
+                    Text("Grade: n/a")
+                    Spacer()
+                }
+                .padding(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 0))
+
+            }
+
             if(locationManager.authorizationStatus == .authorizedAlways || locationManager.authorizationStatus == .authorizedWhenInUse) {
                 if let location = locationManager.location {
                     // Display latitude, longitude, and elevation (altitude)
                     HStack(alignment: .top){
                         VStack(alignment: .leading){
+                            Text("Current Location:")
                             HStack{
                                 Text(String(format: "Latitude: %.3f°,", location.coordinate.latitude))
                                 
@@ -158,7 +205,7 @@ struct ContentView: View {
                             Text(String(format: "Elevation: %.1f (m)",
                                         location.altitude))
                         }
-                        .padding()
+                        .padding(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 0))
                         Spacer()
                     }
                 } else {
@@ -168,26 +215,15 @@ struct ContentView: View {
                     VStack(alignment: .leading) {
                         Text("Total Path Distance: \(String(format: "%.1f", geoSurvey.surveyDistance)) (m)")
                         Text("Elevation Gain: \(String(format: "%.1f", geoSurvey.surveyElevation)) (m)")
+                        Text("Average Grade: \(String(format: "%.1f", geoSurvey.averageGrade))%")
                         if(showSurveyTargetElevation){
                             Text("Target Elevation: \(String(format: "%.1f", geoSurvey.targetPointElevation)) (m)")
                         }
                     }
                     Spacer()
                 }
-                .padding()
+                .padding(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 0))
                 HStack {
-                    Button(action: {
-                        withAnimation(Animation.linear(duration: 0.4)){
-                            self.showSurveyView = true
-                        }
-                    }){
-                        HStack{
-                            Text("Survey Plot")
-                            Image(systemName: "map.circle")
-                        }
-                    }
-                    .padding()
-                    Spacer()
                     Button(action: {
                         addSurveyPoint()
                     }){
@@ -198,7 +234,22 @@ struct ContentView: View {
                         //.background(.blue)
                         //.foregroundColor(Color.white)
                     }
-                    .padding()
+                    .padding(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 0))
+                    Spacer()
+                    /*
+                     Button(action: {
+                         withAnimation(Animation.linear(duration: 0.4)){
+                             self.showSurveyView = true
+                         }
+                     }){
+                         HStack{
+                             Text("Survey Plot")
+                             Image(systemName: "map.circle")
+                         }
+                     }
+                     .padding()
+                     */
+
                 }
             } else{
                 Text("Geolocation Unavailable")
@@ -227,17 +278,22 @@ struct ContentView: View {
                 }
             }
             .padding()*/
-            Picker("Units:", selection: $cameraBasedLevel) {
+            Picker("Mode:", selection: $instrumentMode.animation()) {
                 HStack{
                     Text("Camera Level")
-                    //Image(systemName: "camera")
-                }
-                .tag(true)
-                HStack{
-                    Text("Device Level")
                     //Image(systemName: "righttriangle.fill")
                 }
-                .tag(false)
+                .tag(InstrumentMode.camera)
+                HStack{
+                    Text("Device Level")
+                    //Image(systemName: "camera")
+                }
+                .tag(InstrumentMode.level)
+                HStack{
+                    Text("Survey View")
+                    //Image(systemName: "righttriangle.fill")
+                }
+                .tag(InstrumentMode.survey)
             }
             .frame(height:48)
             .pickerStyle(SegmentedPickerStyle())
@@ -261,7 +317,7 @@ struct ContentView: View {
                 DispatchQueue.main.async {
                     currentAttitude = attitude  // Save current attitude for survey points.
                     let theta : Double
-                    if(self.cameraBasedLevel){
+                    if(self.instrumentMode == .camera){
                         
                         //horizontalAngle =  (attitude.pitch - 1.5707963267948966)
                         
@@ -288,12 +344,12 @@ struct ContentView: View {
                 }
             }
         }
+        /*
         .sheet(isPresented: $showSurveyView) {
             // Pass the current location and attitude into SurveyView.
             SurveyView(geoSurvey: geoSurvey, addPoint: { addSurveyPoint() })
                 .presentationDetents([.fraction(0.6)])
-
-        }
+        }*/
     }
 
 }
