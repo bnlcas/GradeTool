@@ -88,7 +88,13 @@ struct SurveyView: View {
                 Spacer()
             }
             .padding()
-                ElevationPlotView(data: $geoSurvey.surveyPoints, height: 250)
+            ElevationPlotView(data: .constant([SurveyPoint(id: 0, distance: 0.0, elevation: 1330.0),
+                                         SurveyPoint(id: 1, distance: 100.0, elevation: 1100.0),
+                                         SurveyPoint(id: 2, distance: 222.0, elevation: 1250.0),
+                                         SurveyPoint(id: 3, distance: 333.0, elevation: 1550.0),
+                                         SurveyPoint(id: 4, distance: 444.0, elevation: 1530.0),
+                                         SurveyPoint(id: 5, distance: 554.0, elevation: 1532.0),
+       ]), height: 250)
             HStack{
                 Button(action: {
                     geoSurvey.clearSurvey()

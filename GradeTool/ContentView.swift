@@ -31,7 +31,7 @@ struct ContentView: View {
     
     let previewHeight : CGFloat = 400
     
-    @State var grade : Double?
+    @State var grade : Double? = 21.4
     @State var gradeAngle: Double?
     @State var horizontalAngle : Double = 0.0
         
@@ -89,7 +89,9 @@ struct ContentView: View {
                     Group{
                         GeometryReader { geometry in
                             ZStack{
-                                CameraFeedTargetingView(isActive:  .constant(instrumentMode == .camera))
+                                EmptyView()
+                                //Image("sample_trail")
+                                //CameraFeedTargetingView(isActive:  .constant(instrumentMode == .camera))
                                 ReticleView()
                             }
                             .frame(width: geometry.size.width, height: geometry.size.width)
@@ -326,7 +328,7 @@ struct ContentView: View {
                     }
                     hasPassedDebounceThreshold = hasPassedDebounceThreshold || abs(newGrade) > debounceThresholdGrade
                     
-                    grade = newGrade
+                    //grade = newGrade
                     gradeAngle = theta * 57.29577951308232
                 }
             }

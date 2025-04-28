@@ -47,10 +47,10 @@ class GeoSurvey: ObservableObject {
     
     @Published var surveyPoints: [SurveyPoint] = []
     
-    @Published var surveyDistance: Double = 0.0
-    @Published var surveyElevation: Double = 0.0
+    @Published var surveyDistance: Double = 1234.5//0.0
+    @Published var surveyElevation: Double = 123.4//0.0
     @Published var targetPointElevation: Double = 0.0
-    @Published var averageGrade: Double = 0.0
+    @Published var averageGrade: Double = 10.0
 
     
     var deviceLevelForward = true
